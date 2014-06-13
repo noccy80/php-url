@@ -16,9 +16,10 @@ class Url {
         "is_local" => null
     ];
     
-    public static function canonize($url)
+    public static function canonize($url, $default_scheme="http")
     {
         $o = new Url($url);
+        if (!$o->scheme) { $o->scheme = $default_scheme; }
         return $o->getUrl();
     }
     
@@ -30,7 +31,7 @@ class Url {
     public function __construct($url = null)
     {
         
-        if ($url !== null) {
+        if ($url) {
             $this->setUrl($url);
         }
         
@@ -39,29 +40,8 @@ class Url {
     public function setUrl($url)
     {
 
-        if (null !== strpos($url,":")) {
-            list($proto,$urlstr) = explode(":",$url,2);
-            // Count the number of slashes at the start
-            $sc = (strlen($urlstr) - strlen(ltrim($urlstr,"/")));
-            // If no slashes, we simply add two.
-            if ($sc == 0) { $sc = 2; }
-            // If one slash, parse as an absolute path for
-            // compatibility with PHP.
-            if ($sc == 1) {
-                $this->setProps([
-                    "proto" => $proto,
-                    "path" => $path,
-                    "is_local" => true
-                ]);
-            } else {
-                // URL
-                $url = $proto . "://" . ltrim($urlstr,"/");
-                $urlp = parse_url($url);
-                $this->setProps($urlp);
-            }
-
-
-        }
+        $urlp = parse_url($url);
+        $this->setProps($urlp);
         
     }
     
@@ -105,26 +85,22 @@ class Url {
      */
     public function getUrl()
     {
-        if (true == $this->props["is_local"]) {
-            return $this->props["scheme"] . ":" . $this->props["path"];
-        } else {
-            return $this->props["scheme"] . "://" .
-                    (
-                        (!empty($this->props["user"]))?(
-                            $this->props["user"] .
-                            ((!empty($this->props["pass"]))?":".$this->props["pass"]:"") .
-                            "@"
-                        ):""
-                    ) .
-                    $this->props["host"] .
-                    (
-                        (!empty($this->props["port"]))?":".$this->props["port"]:""
-                    ) .
-                    ((!empty($this->props["path"]))?$this->props["path"]:"") .
-                    ((!empty($this->props["query"]))?"?".$this->props["query"]:"") .
-                    ((!empty($this->props["fragment"]))?"#".$this->props["fragment"]:"") 
-                ;
-        }
+        return $this->props["scheme"] . "://" .
+                (
+                    (!empty($this->props["user"]))?(
+                        $this->props["user"] .
+                        ((!empty($this->props["pass"]))?":".$this->props["pass"]:"") .
+                        "@"
+                    ):""
+                ) .
+                $this->props["host"] .
+                (
+                    (!empty($this->props["port"]))?":".$this->props["port"]:""
+                ) .
+                ((!empty($this->props["path"]))?$this->props["path"]:"") .
+                ((!empty($this->props["query"]))?"?".$this->props["query"]:"") .
+                ((!empty($this->props["fragment"]))?"#".$this->props["fragment"]:"") 
+            ;
         
     }
     
