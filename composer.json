@@ -1,0 +1,19 @@
+{
+    "name": "noccylabs/url",
+    "description": "Makes working with URLs easier",
+    "license": "GPL-3.0",
+    "authors": [
+        {
+            "name": "Christopher Vagnetoft",
+            "email": "cvagnetoft@gmail.com"
+        }
+    ],
+    "require": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "NoccyLabs\\Url\\": "lib/"
+        }
+    }
+}
