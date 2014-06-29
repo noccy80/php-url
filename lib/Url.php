@@ -5,7 +5,7 @@ namespace NoccyLabs\Url;
 class Url {
     
     private $props = [
-        "scheme" => "file",
+        "scheme" => null,
         "host" => null,
         "port" => null,
         "user" => null,
@@ -43,6 +43,36 @@ class Url {
         $urlp = parse_url($url);
         $this->setProps($urlp);
         
+    }
+    
+    public function apply($url)
+    {
+        $urlr = clone $this;
+        $urln = new Url($url);
+        // apply parts
+        if ($urln->scheme) {
+            return $urln;
+        }
+        if ($urln->host) {
+            $urln->scheme = $urlr->scheme;
+            return $urln;
+        }
+        // modify new and return
+        if ($urln->query) {
+            $urlr->query = $urln->query;
+        }
+        if ($urln->fragment) {
+            $urlr->fragment = $urln->fragment;
+        }
+        if ($urln->path) {
+            $path = $urln->path;
+            if ($path[0] == "/") {
+                $urlr->path = $urln->path;
+            } else {
+                $urlr->path = dirname($urlr->path)."/".$urln->path;
+            }
+        }
+        return $urlr;
     }
     
     private function setProps(array $props)
