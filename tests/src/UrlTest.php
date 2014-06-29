@@ -12,12 +12,36 @@ class UrlTest extends \PhpUnit_Framework_TestCase
     
     public function testCreate()
     {
-        $this->markTestIncomplete();
+        $this->assertEquals("https://google.com", Url::canonize("google.com", "https"));
+        $this->assertEquals("http://google.com", Url::canonize("google.com"));
+        $this->assertEquals("http://google.com", Url::create("google.com"));
     }
     
     public function testModify()
     {
-        $this->markTestIncomplete();
+        $url = new Url();
+        $this->assertEquals("", $url->getURL());
+        
+        $url->scheme = "http";
+        $this->assertEquals("http://", $url->getURL());
+
+        $url->host = "domain";
+        $this->assertEquals("http://domain", $url->getURL());
+
+        $url->path = "/file";
+        $this->assertEquals("http://domain/file", $url->getURL());
+
+        $url->user = "user";
+        $this->assertEquals("http://user@domain/file", $url->getURL());
+        $url->pass = "pass";
+        $this->assertEquals("http://user:pass@domain/file", $url->getURL());
+
+        $url->query = "query";
+        $this->assertEquals("http://user:pass@domain/file?query", $url->getURL());
+
+        $url->fragment = "fragment";
+        $this->assertEquals("http://user:pass@domain/file?query#fragment", $url->getURL());
+        
     }
     
     public function testCanonize()
@@ -44,6 +68,14 @@ class UrlTest extends \PhpUnit_Framework_TestCase
         $this->assertEquals(
             "http://other.dom/image.jpg",
             Url::create($base)->apply("http://other.dom/image.jpg")
+        );
+        $this->assertEquals(
+            "https://bar.com/index.php",
+            Url::create($base)->apply("https://bar.com/index.php")
+        );
+        $this->assertEquals(
+            "http://bar.com/index.php",
+            Url::create($base)->apply("//bar.com/index.php")
         );
     }
 }        

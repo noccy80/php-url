@@ -23,9 +23,11 @@ class Url {
         return $o->getUrl();
     }
     
-    public static function create($url)
+    public static function create($url, $default_scheme="http")
     {
-        return new Url($url);
+        $o = new Url($url);
+        if (!$o->scheme) { $o->scheme = $default_scheme; }
+        return $o;
     }
     
     public function __construct($url = null)
@@ -115,6 +117,7 @@ class Url {
      */
     public function getUrl()
     {
+        if (!$this->props["scheme"]) { return ""; }
         return $this->props["scheme"] . "://" .
                 (
                     (!empty($this->props["user"]))?(
