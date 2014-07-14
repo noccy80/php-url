@@ -1,10 +1,35 @@
 <?php
 
+/*
+ * Copyright (C) 2014, NoccyLabs
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+
 namespace NoccyLabs\Url;
 
+/**
+ * Encapsulates an URL and allows its parts to be modified, full or partial URLs
+ * to be applied, and more.
+ *
+ * @author Christopher Vagnetoft <cvagnetoft@gmail.com>
+ * @license GPL-3.0
+ */
 class Url {
     
-    private $props = [
+    /** @var array The properties of the URL */
+    private $props = array(
         "scheme" => null,
         "host" => null,
         "port" => null,
@@ -14,31 +39,57 @@ class Url {
         "query" => null,
         "fragment" => null,
         "is_local" => null
-    ];
+    );
     
+    /**
+     * Helper function to canonize a URL with a default scheme.
+     *
+     * @param string The URL to parse
+     * @param string The default scheme (http)
+     * @return string The canonized URL
+     */
     public static function canonize($url, $default_scheme="http")
     {
         $o = new Url($url);
-        if (!$o->scheme) { $o->scheme = $default_scheme; }
+        if (!$o->scheme) {
+            $o->scheme = $default_scheme;
+        }
         return $o->getUrl();
     }
     
+    /**
+     * Helper function to create a URL object with a default scheme.
+     *
+     * @param string The URL to parse
+     * @param string The default scheme (http)
+     * @return NoccyLabs\Url\Url The parsed Url object
+     */
     public static function create($url, $default_scheme="http")
     {
         $o = new Url($url);
-        if (!$o->scheme) { $o->scheme = $default_scheme; }
+        if (!$o->scheme) {
+            $o->scheme = $default_scheme;
+        }
         return $o;
     }
-    
+
+    /**
+     * Constructor
+     *
+     * @param string The URL to parse
+     */    
     public function __construct($url = null)
     {
-        
         if ($url) {
             $this->setUrl($url);
         }
-        
     }
     
+    /**
+     * Set the URL
+     *
+     * @param string The URL to set
+     */
     public function setUrl($url)
     {
 
@@ -47,6 +98,13 @@ class Url {
         
     }
     
+    /**
+     * Apply a full or partial URL to the current URL and return a new object
+     * containing the applied URL.
+     *
+     * @param string The URL segment to apply
+     * @return NoccyLabs\Url\Url The applied URL object
+     */
     public function apply($url)
     {
         $urlr = clone $this;
@@ -77,6 +135,12 @@ class Url {
         return $urlr;
     }
     
+    /**
+     * Assign properties from array
+     *
+     * @internal
+     * @param array Properties to assign
+     */
     private function setProps(array $props)
     {
         foreach ($this->props as $prop=>$value) {
@@ -88,6 +152,9 @@ class Url {
         
     }
 
+    /**
+     * {@inheritDoc}
+     */
     public function __get($prop)
     {
         return (array_key_exists($prop,$this->props))?
@@ -95,6 +162,9 @@ class Url {
         
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public function __set($prop,$value)
     {
         if (array_key_exists($prop,$this->props))
@@ -104,16 +174,19 @@ class Url {
     
     }
     
+    /**
+     * {@inheritDoc}
+     */
     public function __isset($prop)
     {
         return array_key_exists($prop,$this->props);     
     }
     
     /**
-     * @brief Return the assembled URI
+     * Return the assembled canonical URL
      * 
      * @see __toString()
-     *
+     * @return string The canonical URL
      */
     public function getUrl()
     {
@@ -137,6 +210,11 @@ class Url {
         
     }
     
+    /**
+     * Return the URL as a string
+     *
+     * @return string The URL as a string
+     */
     public function __toString()
     {
         return $this->getUrl();
