@@ -168,7 +168,7 @@ class Url {
     public function __set($prop,$value)
     {
         if (array_key_exists($prop,$this->props))
-            $this->props[$prop] = $value;
+            $this->props[$prop] = (string)$value;
         else
             throw new \Exception("Invalid property access to Url: {$prop}");
     
