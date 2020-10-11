@@ -103,9 +103,10 @@ class Url {
      * containing the applied URL.
      *
      * @param string The URL segment to apply
+     * @param bool If true, the query string will be included
      * @return NoccyLabs\Url\Url The applied URL object
      */
-    public function apply($url)
+    public function apply($url, bool $withQuery=false)
     {
         $urlr = clone $this;
         $urln = new Url($url);
@@ -120,6 +121,8 @@ class Url {
         // modify new and return
         if ($urln->query) {
             $urlr->query = $urln->query;
+        } elseif ($urlr->query && !$withQuery) {
+            $urlr->query = null;
         }
         if ($urln->fragment) {
             $urlr->fragment = $urln->fragment;

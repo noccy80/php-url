@@ -2,14 +2,8 @@
 
 namespace NoccyLabs\Url;
 
-class QueryStringTest extends \PhpUnit_Framework_TestCase
+class QueryStringTest extends \PhpUnit\Framework\TestCase
 {
-    public function setup()
-    {}
-    
-    public function teardown()
-    {}
-    
     public function testCreateEmpty()
     {
         $qs = new QueryString();

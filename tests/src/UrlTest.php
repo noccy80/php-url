@@ -2,14 +2,8 @@
 
 namespace NoccyLabs\Url;
 
-class UrlTest extends \PhpUnit_Framework_TestCase
+class UrlTest extends \PhpUnit\Framework\TestCase
 {
-    public function setup()
-    {}
-    
-    public function teardown()
-    {}
-    
     public function testCreate()
     {
         $this->assertEquals("https://google.com", Url::canonize("google.com", "https"));
@@ -76,6 +70,31 @@ class UrlTest extends \PhpUnit_Framework_TestCase
         $this->assertEquals(
             "http://bar.com/index.php",
             Url::create($base)->apply("//bar.com/index.php")
+        );
+    }
+
+    public function testApplyWithQuery()
+    {
+        $base = "http://domain.tld/some/url?test=1";
+
+        $applied = Url::create($base)->apply("/other", true);
+        $this->assertEquals(
+            "/other",
+            $applied->path
+        );
+        $this->assertEquals(
+            "test=1",
+            $applied->query
+        );
+
+        $applied = Url::create($base)->apply("/other", false);
+        $this->assertEquals(
+            "/other",
+            $applied->path
+        );
+        $this->assertEquals(
+            null,
+            $applied->query
         );
     }
 }        
