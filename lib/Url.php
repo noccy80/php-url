@@ -110,6 +110,9 @@ class Url {
     {
         $urlr = clone $this;
         $urln = new Url($url);
+
+        $sameHost = (($urlr->host == $urln->host) && ($urlr->port == $urln->port) && ($urlr->scheme == $urln->scheme));
+
         // apply parts
         if ($urln->scheme) {
             return $urln;
@@ -128,12 +131,28 @@ class Url {
             $urlr->fragment = $urln->fragment;
         }
         if ($urln->path) {
-            $path = $urln->path;
+            $path = explode("/", $urln->path);
+            $rpath = explode("/", $urlr->path);
+            if (reset($path) == "") {
+                $rpath = $path;
+            } else {
+                array_pop($rpath);
+                foreach ($path as $node) {
+                    if ($node == ".") continue;
+                    elseif ($node == "..") array_pop($rpath);
+                    else array_push($rpath, $node);
+                }
+            }
+            $urlr->path = join("/", $rpath);
+            /*
             if ($path[0] == "/") {
                 $urlr->path = $urln->path;
             } else {
                 $urlr->path = dirname($urlr->path)."/".$urln->path;
             }
+            */
+        } else {
+            $urlr = "";
         }
         return $urlr;
     }

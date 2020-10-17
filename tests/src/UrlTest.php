@@ -60,6 +60,10 @@ class UrlTest extends \PhpUnit\Framework\TestCase
             Url::create($base)->apply("/image.jpg")
         );
         $this->assertEquals(
+            "http://domain.tld/path/image.jpg",
+            Url::create($base)->apply("../image.jpg")
+        );
+        $this->assertEquals(
             "http://other.dom/image.jpg",
             Url::create($base)->apply("http://other.dom/image.jpg")
         );
